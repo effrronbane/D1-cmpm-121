@@ -4,6 +4,11 @@
 
 import titleUrl from "./assets/cafe_clicker_title.png?no-inline";
 import coffeeCupUrl from "./assets/coffeecup.png?no-inline";
+import clink1Url from "./assets/clink1.wav?no-inline";
+import clink2Url from "./assets/clink2.wav?no-inline";
+import clink3Url from "./assets/clink3.wav?no-inline";
+import clink4Url from "./assets/clink4.wav?no-inline";
+import clink5Url from "./assets/clink5.wav?no-inline";
 
 const app = document.querySelector<HTMLElement>("#app")!;
 
@@ -32,6 +37,7 @@ function onFrame(currentTimestamp: number) {
     const secondsPassed = millisecondsPassed / 1000;
 
     growCoffee(secondsPassed);
+    updateSplash(secondsPassed);
     updateDisplay();
 
     previousTimestamp = currentTimestamp;
@@ -64,7 +70,91 @@ brewButton.append(cupImage);
 brewButton.addEventListener("click", () => {
   cupsOfCoffee += cupsPerClick;
   updateDisplay();
+  playClink();
+  splash();
 });
+
+interface Drop {
+  element: HTMLDivElement;
+  x: number;
+  y: number;
+  speedX: number;
+  speedY: number;
+  age: number;
+}
+
+const drops: Drop[] = [];
+const gravity = 1500;
+const dropLifetime = 0.7;
+const coffeeColors = ["#3b2213", "#6b3e21", "#8b5a35"];
+
+function splash() {
+  if (drops.length > 200) return;
+
+  const cupBox = brewButton.getBoundingClientRect();
+  const startX = cupBox.left + cupBox.width / 2;
+  const startY = cupBox.top + cupBox.height / 4;
+  const numberOfDrops = Math.min(10 + cupsPerClick, 25);
+
+  for (let i = 0; i < numberOfDrops; i++) {
+    const size = 4 + Math.random() * 8;
+    const color = coffeeColors[Math.floor(Math.random() * coffeeColors.length)];
+
+    const element = document.createElement("div");
+    element.style.position = "fixed";
+    element.style.left = `${startX}px`;
+    element.style.top = `${startY}px`;
+    element.style.width = `${size}px`;
+    element.style.height = `${size}px`;
+    element.style.borderRadius = "50%";
+    element.style.backgroundColor = color;
+    element.style.pointerEvents = "none";
+    document.body.append(element);
+
+    drops.push({
+      element: element,
+      x: startX,
+      y: startY,
+      speedX: Math.random() * 400 - 200,
+      speedY: -300 - Math.random() * 350,
+      age: 0,
+    });
+  }
+}
+
+function updateSplash(secondsPassed: number) {
+  for (let i = 0; i < drops.length; i++) {
+    const drop = drops[i];
+    drop.age += secondsPassed;
+    drop.speedY += gravity * secondsPassed;
+    drop.x += drop.speedX * secondsPassed;
+    drop.y += drop.speedY * secondsPassed;
+
+    drop.element.style.left = `${drop.x}px`;
+    drop.element.style.top = `${drop.y}px`;
+    drop.element.style.opacity = `${1 - (drop.age / dropLifetime) ** 2}`;
+  }
+
+  while (drops.length > 0 && drops[0].age >= dropLifetime) {
+    drops[0].element.remove();
+    drops.shift();
+  }
+}
+
+const clinkSounds = [
+  new Audio(clink1Url),
+  new Audio(clink2Url),
+  new Audio(clink3Url),
+  new Audio(clink4Url),
+  new Audio(clink5Url),
+];
+
+function playClink() {
+  const randomIndex = Math.floor(Math.random() * clinkSounds.length);
+  const clinkSound = clinkSounds[randomIndex];
+  clinkSound.currentTime = 0;
+  clinkSound.play();
+}
 
 const upgrades = [
   {
