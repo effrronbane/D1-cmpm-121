@@ -9,9 +9,26 @@ body {
   text-align: center;
 }
 
+p,
+h1 {
+  font-family: "Times New Roman";
+}
+
 .title-image {
   max-width: 75%;
   height: auto;
+}
+
+#numCoffeeDisplay {
+  color: #FFF3C2;
+}
+
+button {
+  border-color: rgb(165, 124, 124);
+  border-style: inset;
+  padding: 10px;
+  border-radius: 10px;
+  border-width: 5px;
 }
 
 #brew-button {

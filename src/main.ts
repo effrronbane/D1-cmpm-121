@@ -46,7 +46,8 @@ titleImage.alt = "Cafe Clicker";
 titleImage.className = "title-image";
 heading.append(titleImage);
 
-const numCoffeeDisplay = document.createElement("p");
+const numCoffeeDisplay = document.createElement("h1");
+numCoffeeDisplay.id = "numCoffeeDisplay";
 const productionDisplay = document.createElement("p");
 const numPerClick = document.createElement("p");
 
@@ -85,7 +86,7 @@ const upgrades = [
     owned: 0,
   },
   {
-    name: "Pastry case",
+    name: "Pastry Case",
     description: "Customers stay longer and order more",
     baseCost: 50,
     costMultiplier: 1.3,
@@ -94,7 +95,7 @@ const upgrades = [
     owned: 0,
   },
   {
-    name: "Espresso blend",
+    name: "Espresso Blend",
     description: "Premium beans make every click stronger",
     baseCost: 100,
     costMultiplier: 1.5,
